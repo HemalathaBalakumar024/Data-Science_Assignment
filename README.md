@@ -21,10 +21,12 @@ Your task is to forecast daily sales for each product family at each store for t
 ## Part 1: Data Processing and Feature Engineering (Day 1)
 ### 1. Data Cleaning
 - Load the dataset using Pandas.
+   ```
    train = pd.read_csv('train.csv', parse_dates=['date'])
    stores = pd.read_csv('stores.csv')
    oil = pd.read_csv('oil.csv', parse_dates=['date'])
    holidays = pd.read_csv('holidays_events.csv', parse_dates=['date'])
+   ```
 
 - Handle missing values in oil prices by filling gaps with interpolation.
    oil['dcoilwtico'] = oil['dcoilwtico'].interpolate(method='linear')
