@@ -29,106 +29,159 @@ Your task is to forecast daily sales for each product family at each store for t
    ```
 
 - Handle missing values in oil prices by filling gaps with interpolation.
-   oil['dcoilwtico'] = oil['dcoilwtico'].interpolate(method='linear')
+    ```
+     oil['dcoilwtico'] = oil['dcoilwtico'].interpolate(method='linear')
+      ```
   
 -  Convert date columns to proper datetime formats
+    ```
    train['date'] = pd.to_datetime(train['date'])
    oil['date'] = pd.to_datetime(oil['date'])
    holidays_events['date'] = pd.to_datetime(holidays_events['date'])
+      ```
    
 - Merge data from `stores.csv`, `oil.csv`, and `holidays_events.csv` into the main dataset.
+    ```
   train = train.merge(stores, on='store_nbr', how='left')
   train = train.merge(oil, on='date', how='left')
   train = train.merge(holidays, on='date', how='left')
+      ```
 
 ### 2. Feature Engineering
 #### Time-based Features:
 - Extract **day, week, month, year, and day of the week**.
 - Identify **seasonal trends** (e.g., are sales higher in December?).
-train['day'] = train['date'].dt.day
-train['week'] = train['date'].dt.isocalendar().week
-train['month'] = train['date'].dt.month
-train['year'] = train['date'].dt.year
-train['day_of_week'] = train['date'].dt.dayofweek
+  ```
+  train['day'] = train['date'].dt.day
+  train['week'] = train['date'].dt.isocalendar().week
+  train['month'] = train['date'].dt.month
+  train['year'] = train['date'].dt.year
+  train['day_of_week'] = train['date'].dt.dayofweek
+    ```
 
 
 #### Event-based Features:
 - Create **binary flags** for holidays, promotions, and economic events.
 - Identify if a day is a **government payday** (15th and last day of the month).
 - Consider **earthquake impact (April 16, 2016)** as a separate feature.
-train['is_holiday'] = train['type'].notna().astype(int)
-train['is_weekend'] = (train['day_of_week'] >= 5).astype(int)
-train['is_gov_payday'] = train['day'].isin([15, train['date'].dt.days_in_month]).astype(int)
-train['earthquake_impact'] = (train['date'] == '2016-04-16').astype(int)
+  ```
+  train['is_holiday'] = train['type'].notna().astype(int)
+  train['is_weekend'] = (train['day_of_week'] >= 5).astype(int)
+  train['is_gov_payday'] = train['day'].isin([15, train['date'].dt.days_in_month]).astype(int)
+  train['earthquake_impact'] = (train['date'] == '2016-04-16').astype(int)
+    ```
 
 
 #### Rolling Statistics:
 - Compute **moving averages** and **rolling standard deviations** for past sales.
 - Include **lagged features** (e.g., sales from the previous week, previous month).
-train['sales_lag_7'] = train.groupby(['store_nbr', 'family'])['sales'].shift(7)
-train['sales_lag_30'] = train.groupby(['store_nbr', 'family'])['sales'].shift(30)
-train['rolling_mean_7'] = train.groupby(['store_nbr', 'family'])['sales'].rolling(7).mean().reset_index(level=[0,1], drop=True)
-train['rolling_std_7'] = train.groupby(['store_nbr', 'family'])['sales'].rolling(7).std().reset_index(level=[0,1], drop=True)
+  ```
+  train['sales_lag_7'] = train.groupby(['store_nbr', 'family'])['sales'].shift(7)
+  train['sales_lag_30'] = train.groupby(['store_nbr', 'family'])['sales'].shift(30)
+  train['rolling_mean_7'] = train.groupby(['store_nbr', 'family'])['sales'].rolling(7).mean().reset_index(level=[0,1], drop=True)
+  train['rolling_std_7'] = train.groupby(['store_nbr', 'family'])['sales'].rolling(7).std().reset_index(level=[0,1], drop=True)
+    ```
 
 
 #### Store-Specific Aggregations:
 - Compute **average sales per store type**.
 - Identify **top-selling product families per cluster**.
-store_avg_sales = train.groupby('store_nbr')['sales'].mean().rename('avg_store_sales')
-train = train.merge(store_avg_sales, on='store_nbr', how='left')
-
+  ```
+  store_avg_sales = train.groupby('store_nbr')['sales'].mean().rename('avg_store_sales')
+  train = train.merge(store_avg_sales, on='store_nbr', how='left')
+  ```
 ### 3. Exploratory Data Analysis (EDA)
 - Visualize **sales trends over time**.
-print("Exploratory Data Analysis")
-plt.figure(figsize=(12, 6))
-sns.lineplot(x='date', y='sales', data=train, label='Sales Trend')
-plt.title('Sales Trends Over Time')
-plt.xlabel('Date')
-plt.ylabel('Sales')
-plt.xticks(rotation=45)
-plt.legend()
-plt.show()
+  ```
+  print("Exploratory Data Analysis")
+  plt.figure(figsize=(12, 6))
+  sns.lineplot(x='date', y='sales', data=train, label='Sales Trend')
+  plt.title('Sales Trends Over Time')
+  plt.xlabel('Date')
+  plt.ylabel('Sales')
+  plt.xticks(rotation=45)
+  plt.legend()
+  plt.show()
+    ```
 
 - Analyze **sales before and after holidays and promotions**.
-holiday_sales = train.groupby(['date', 'is_holiday'])['sales'].mean().reset_index()
-sns.boxplot(x='is_holiday', y='sales', data=holiday_sales)
-plt.title('Sales Before and After Holidays')
-plt.xlabel('Is Holiday')
-plt.ylabel('Sales')
-plt.show()
+  ```
+  holiday_sales = train.groupby(['date', 'is_holiday'])['sales'].mean().reset_index()
+  sns.boxplot(x='is_holiday', y='sales', data=holiday_sales)
+  plt.title('Sales Before and After Holidays')
+  plt.xlabel('Is Holiday')
+  plt.ylabel('Sales')
+  plt.show()
+    ```
 
 - Check **correlations between oil prices and sales trends**.
-correlation = train[['sales', 'dcoilwtico']].corr()
-print("Correlation between Sales and Oil Prices:")
-print(correlation)
-sns.scatterplot(x='dcoilwtico', y='sales', data=train)
-plt.title('Oil Prices vs Sales')
-plt.xlabel('Oil Price')
-plt.ylabel('Sales')
-plt.show()
+  ```
+  correlation = train[['sales', 'dcoilwtico']].corr()
+  print("Correlation between Sales and Oil Prices:")
+  print(correlation)
+  sns.scatterplot(x='dcoilwtico', y='sales', data=train)
+  plt.title('Oil Prices vs Sales')
+  plt.xlabel('Oil Price')
+  plt.ylabel('Sales')
+  plt.show()
+    ```
 
 - Identify **anomalies in the data**.
-sns.boxplot(y='sales', data=train)
-plt.title('Sales Anomalies Detection')
-plt.ylabel('Sales')
-plt.show()
-
-train.to_csv('processed_train.csv', index=False)
-
-print("Data processing and feature engineering completed.")
+  ```
+  sns.boxplot(y='sales', data=train)
+  plt.title('Sales Anomalies Detection')
+  plt.ylabel('Sales')
+  plt.show()
+    train.to_csv('processed_train.csv', index=False)
+  print("Data processing and feature engineering completed.")
+    ```
 
 
 ## Part 2: Model Selection, Forecasting, and Evaluation (Day 2)
 ### 1. Model Training
 Train at least five different time series forecasting models:
 - **Baseline Model (Naïve Forecasting)** - Assume future sales = previous sales.
-
+  ```
+  train['naive_forecast'] = train.groupby(['store_nbr', 'family'])['sales'].shift(1)
+    ```
+# Prepare training data
+  ```
+features = ['day', 'week', 'month', 'year', 'day_of_week', 'is_holiday', 'is_weekend', 
+            'is_gov_payday', 'earthquake_impact', 'sales_lag_7', 'sales_lag_30', 
+            'rolling_mean_7', 'rolling_std_7', 'avg_store_sales']
+X = train[features].dropna()
+y = train.loc[X.index, 'sales']
+  ```
+# Split into training and validation sets
+  ```
+train_size = int(len(X) * 0.8)
+X_train, X_val = X[:train_size], X[train_size:]
+y_train, y_val = y[:train_size], y[train_size:]
+  ```
 - **ARIMA (AutoRegressive Integrated Moving Average)** - A traditional time series model.
-- **Random Forest Regressor** - Tree-based model to capture non-linear relationships.
-- **XGBoost or LightGBM** - Gradient boosting models to improve accuracy.
-- **LSTM (Long Short-Term Memory Neural Network)** - A deep learning-based forecasting model.
+  ```
+  arima_model = ARIMA(y_train, order=(2,1,0))
+  arima_model_fit = arima_model.fit(low_memory=True)
+  arima_preds = arima_model_fit.forecast(steps=len(y_val))
+    ```
 
-**Bonus Challenge:** If comfortable, implement a **Prophet model** for handling seasonality.
+- **Random Forest Regressor** - Tree-based model to capture non-linear relationships.
+  ```
+  rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+  rf_model.fit(X_train, y_train)
+  rf_preds = rf_model.predict(X_val)
+  sample_size = 100000  # Adjust based on available memory
+  X_sample = X_train.sample(sample_size, random_state=42)
+  y_sample = y_train.loc[X_sample.index]
+  rf_model.fit(X_sample, y_sample)
+    ```
+
+- **XGBoost or LightGBM** - Gradient boosting models to improve accuracy.
+  ```
+  xgb_model = XGBRegressor(objective='reg:squarederror', n_estimators=100, learning_rate=0.1)
+  xgb_model.fit(X_train, y_train)
+  xgb_preds = xgb_model.predict(X_val)
+    ```
 
 ### 2. Model Evaluation
 Compare models based on:
@@ -136,11 +189,43 @@ Compare models based on:
 - **Mean Absolute Percentage Error (MAPE)**
 - **R-Squared Score**
 - **Visual Inspection** (Plot actual vs. predicted sales)
+  ```
+  def evaluate_model(y_true, y_pred, model_name):
+    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+    mape = mean_absolute_percentage_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+    print(f"{model_name} - RMSE: {rmse:.2f}, MAPE: {mape:.2%}, R2: {r2:.2f}")
+    
 
+  print("Model Evaluation:")
+  if 'arima_preds' in locals():
+    evaluate_model(y_val, arima_preds, "ARIMA")
+  else:
+    print("ARIMA predictions not found.")
+  if "rf_model" in locals():
+    rf_preds = rf_model.predict(X_val)
+  else:
+    print("Random Forest model not trained.")
+
+  evaluate_model(y_val, arima_preds, "ARIMA")
+  evaluate_model(y_val, rf_preds, "Random Forest")
+  evaluate_model(y_val, xgb_preds, "XGBoost")
+  ```
 ### 3. Visualization
 - Plot **historical sales and predicted sales**.
 - Compare **model performances** using error metrics.
 - Visualize **feature importance** (for Random Forest/XGBoost).
+  ```
+  plt.figure(figsize=(12, 6))
+  sns.lineplot(x=y_val.index, y=y_val, label='Actual Sales')
+  sns.lineplot(x=y_val.index, y=rf_preds, label='Random Forest Predictions')
+  sns.lineplot(x=y_val.index, y=xgb_preds, label='XGBoost Predictions')
+  plt.legend()
+  plt.title('Actual vs Predicted Sales')
+  plt.show()
+
+  print("Model training, forecasting, and evaluation completed.")
+    ```
 
 ### 4. Interpretation and Business Insights
 - Summarize **which model performed best and why**.
