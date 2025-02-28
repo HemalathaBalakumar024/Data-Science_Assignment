@@ -236,23 +236,25 @@ Model Comparison Based on Metrics
 |Random Forest |	     431.90	              |   975344682013655424.00%	 |   0.90 (good)           |
 |XGBoost	      |       307.43 (best)	     |   728251545701144448.00%	 |   0.95 (best)           |
 
-Interpretation
-RMSE (Root Mean Square Error)
+**Interpretation**
+1.**RMSE (Root Mean Square Error)**
 
-XGBoost has the lowest RMSE (307.43), meaning its predictions are closest to actual values.
-ARIMA performs the worst (1411.32).
-Random Forest is better than ARIMA but worse than XGBoost.
-R² (Coefficient of Determination)
+- XGBoost has the lowest RMSE (307.43), meaning its predictions are closest to actual values.
+- ARIMA performs the worst (1411.32).
+- Random Forest is better than ARIMA but worse than XGBoost.
 
-XGBoost has the highest R² (0.95), indicating it explains 95% of the variance.
-Random Forest is close with 0.90.
-ARIMA has negative R², meaning it's worse than simply using the mean of the data.
-MAPE (Mean Absolute Percentage Error) – Extremely Large!
+2.**R² (Coefficient of Determination)**
 
-These numbers are way too big to be reasonable. This suggests:
-Some predictions are dividing by very small actual values (causing MAPE to explode).
-Data scaling issues (e.g., log-transformed data).
-Errors when computing percentage format (should be in 0-100% range).
+ - XGBoost has the highest R² (0.95), indicating it explains 95% of the variance.
+ - Random Forest is close with 0.90.
+ - ARIMA has negative R², meaning it's worse than simply using the mean of the data.
+   
+3.**MAPE (Mean Absolute Percentage Error) – Extremely Large!**
+
+ - These numbers are way too big to be reasonable. This suggests:
+ - Some predictions are dividing by very small actual values (causing MAPE to explode).
+ - Data scaling issues (e.g., log-transformed data).
+ - Errors when computing percentage format (should be in 0-100% range).
 
 #### Best Performing Model
 Based on the error metrics, the **[XGBoost Model]** performed best with the lowest RMSE and highest R-Squared value. This model effectively captured the sales patterns and external factors.
