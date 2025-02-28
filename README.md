@@ -237,19 +237,20 @@ Model Comparison Based on Metrics
 |XGBoost	      |       307.43 (best)	     |   728251545701144448.00%	 |   0.95 (best)           |
 
 **Interpretation**
-1.**RMSE (Root Mean Square Error)**
+
+1. **RMSE (Root Mean Square Error)**
 
 - XGBoost has the lowest RMSE (307.43), meaning its predictions are closest to actual values.
 - ARIMA performs the worst (1411.32).
 - Random Forest is better than ARIMA but worse than XGBoost.
 
-2.**R² (Coefficient of Determination)**
+2. **R² (Coefficient of Determination)**
 
  - XGBoost has the highest R² (0.95), indicating it explains 95% of the variance.
  - Random Forest is close with 0.90.
  - ARIMA has negative R², meaning it's worse than simply using the mean of the data.
    
-3.**MAPE (Mean Absolute Percentage Error) – Extremely Large!**
+3. **MAPE (Mean Absolute Percentage Error) – Extremely Large!**
 
  - These numbers are way too big to be reasonable. This suggests:
  - Some predictions are dividing by very small actual values (causing MAPE to explode).
