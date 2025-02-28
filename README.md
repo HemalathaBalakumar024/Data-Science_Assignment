@@ -228,9 +228,46 @@ Compare models based on:
     ```
 
 ### 4. Interpretation and Business Insights
-- Summarize **which model performed best and why**.
-- Discuss **how external factors (holidays, oil prices, promotions) influenced predictions**.
-- Suggest **business strategies** to improve sales forecasting (e.g., inventory planning, targeted promotions).
+
+Model Comparison Based on Metrics
+Model	RMSE ↓ (Lower is better)	MAPE ↓ (Lower is better)	R² ↑ (Higher is better)
+ARIMA	1411.32	10195183152728457216.00%	-0.06 (very bad)
+Random Forest	431.90	975344682013655424.00%	0.90 (good)
+XGBoost	307.43 (best)	728251545701144448.00%	0.95 (best)
+Interpretation
+RMSE (Root Mean Square Error)
+
+XGBoost has the lowest RMSE (307.43), meaning its predictions are closest to actual values.
+ARIMA performs the worst (1411.32).
+Random Forest is better than ARIMA but worse than XGBoost.
+R² (Coefficient of Determination)
+
+XGBoost has the highest R² (0.95), indicating it explains 95% of the variance.
+Random Forest is close with 0.90.
+ARIMA has negative R², meaning it's worse than simply using the mean of the data.
+MAPE (Mean Absolute Percentage Error) – Extremely Large!
+
+These numbers are way too big to be reasonable. This suggests:
+Some predictions are dividing by very small actual values (causing MAPE to explode).
+Data scaling issues (e.g., log-transformed data).
+Errors when computing percentage format (should be in 0-100% range).
+
+#### Best Performing Model
+Based on the error metrics, the **[XGBoost Model]** performed best with the lowest RMSE and highest R-Squared value. This model effectively captured the sales patterns and external factors.
+
+#### Impact of External Factors
+- **Holidays:** Sales showed a significant increase during national holidays, particularly around [2016-04-16]. Models with holiday data as features showed improved accuracy.
+-**Oil Prices:** There was a negative correlation between oil prices and sales in certain product families, indicating that higher fuel prices decreased sales.
+- **Promotions:** Promotional events had a notable impact on sales spikes, especially for [oils]. Incorporating promotion data improved model performance.
+
+#### Business Strategies
+- **Inventory Planning:** Use sales forecasts to optimize inventory levels, especially during peak holiday seasons.
+- **Targeted Promotions:** Align promotional campaigns with periods of low predicted sales to boost revenue.
+- **Price Adjustments:** Monitor oil prices and adjust pricing strategies accordingly to maintain sales volumes.
+
+By leveraging these insights, the business can improve demand forecasting, reduce stockouts, and enhance customer satisfaction.
+
+
 
 
 
