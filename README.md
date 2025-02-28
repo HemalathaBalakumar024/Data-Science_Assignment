@@ -257,7 +257,7 @@ Based on the error metrics, the **[XGBoost Model]** performed best with the lowe
 
 #### Impact of External Factors
 - **Holidays:** Sales showed a significant increase during national holidays, particularly around [2016-04-16]. Models with holiday data as features showed improved accuracy.
--**Oil Prices:** There was a negative correlation between oil prices and sales in certain product families, indicating that higher fuel prices decreased sales.
+- **Oil Prices:** There was a negative correlation between oil prices and sales in certain product families, indicating that higher fuel prices decreased sales.
 - **Promotions:** Promotional events had a notable impact on sales spikes, especially for [oils]. Incorporating promotion data improved model performance.
 
 #### Business Strategies
