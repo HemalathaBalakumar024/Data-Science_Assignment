@@ -230,10 +230,12 @@ Compare models based on:
 ### 4. Interpretation and Business Insights
 
 Model Comparison Based on Metrics
-Model	RMSE ↓ (Lower is better)	MAPE ↓ (Lower is better)	R² ↑ (Higher is better)
-ARIMA	1411.32	10195183152728457216.00%	-0.06 (very bad)
-Random Forest	431.90	975344682013655424.00%	0.90 (good)
-XGBoost	307.43 (best)	728251545701144448.00%	0.95 (best)
+|    Model     |	RMSE ↓ (Lower is better) |	MAPE ↓ (Lower is better)    |	R² ↑ (Higher is better) |
+| ------------ | -------------------------- | ------------------------   | ----------------------- |
+|ARIMA	      |       1411.32              |	10195183152728457216.00% |  -0.06 (very bad)       |
+|Random Forest |	     431.90	              |   975344682013655424.00%	 |   0.90 (good)           |
+|XGBoost	      |       307.43 (best)	     |   728251545701144448.00%	 |   0.95 (best)           |
+
 Interpretation
 RMSE (Root Mean Square Error)
 
